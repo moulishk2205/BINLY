@@ -1,0 +1,2626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Binly – Smart Waste & Credits</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --primary: #10b981;
+      --primary-dark: #059669;
+      --primary-soft: #d1fae5;
+      --bg: #0b1120;
+      --bg-soft: #020617;
+      --card: #020617;
+      --border: #1f2937;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #22c55e;
+      --info: #38bdf8;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-soft: 0 18px 40px rgba(15,23,42,0.65);
+      --transition: all 0.2s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #0f172a 0, #020617 45%, #000 100%);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .glow-orbit {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 10% 20%, rgba(34,197,94,0.12), transparent 55%),
+        radial-gradient(circle at 90% 10%, rgba(56,189,248,0.10), transparent 55%),
+        radial-gradient(circle at 10% 90%, rgba(244,114,182,0.08), transparent 55%);
+      opacity: 0.9;
+    }
+
+    .app-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 16px 32px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    header.app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 18px;
+      background: radial-gradient(circle at 30% 20%, #bbf7d0 0, #22c55e 30%, #047857 70%, #0f172a 100%);
+      box-shadow:
+        0 0 0 1px rgba(15,23,42,0.85),
+        0 18px 38px rgba(16,185,129,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ecfdf5;
+      font-weight: 800;
+      font-size: 20px;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-title span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--primary);
+      box-shadow: 0 0 0 4px rgba(16,185,129,0.25);
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pill {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.45);
+      background: radial-gradient(circle at top left, rgba(148,163,184,0.15), rgba(15,23,42,0.9));
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34,197,94,0.2);
+    }
+
+    .pill-warning {
+      border-color: rgba(248,250,252,0.08);
+      background: radial-gradient(circle at top left, rgba(248,250,252,0.06), rgba(15,23,42,0.9));
+      color: #e5e7eb;
+    }
+
+    .pill-warning .pill-dot {
+      background: #f97316;
+      box-shadow: 0 0 0 4px rgba(249,115,22,0.18);
+    }
+
+    nav.main-nav {
+      margin-top: 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(30,64,175,0.7);
+      background: radial-gradient(circle at top, rgba(15,23,42,0.95), rgba(15,23,42,0.94));
+      padding: 3px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      box-shadow: 0 14px 30px rgba(15,23,42,0.8);
+    }
+
+    .nav-item {
+      flex: 1;
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: #9ca3af;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .nav-item:hover {
+      color: #e5e7eb;
+      background: radial-gradient(circle at top, rgba(30,64,175,0.6), rgba(15,23,42,0.6));
+    }
+
+    .nav-item.active {
+      color: #e5e7eb;
+      background: radial-gradient(circle at top, rgba(37,99,235,1), rgba(15,23,42,0.9));
+      box-shadow:
+        inset 0 0 0 1px rgba(59,130,246,0.8),
+        0 12px 28px rgba(37,99,235,0.45);
+    }
+
+    .nav-item span.badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.85);
+      border: 1px solid rgba(148,163,184,0.35);
+    }
+
+    .page {
+      display: none;
+      margin-top: 18px;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .layout-two-column {
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(260px, 1.4fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .layout-two-column {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      header.app-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-right {
+        align-self: stretch;
+        justify-content: flex-end;
+      }
+    }
+
+    .card {
+      border-radius: var(--radius-lg);
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.98), rgba(15,23,42,1));
+      border: 1px solid rgba(15,23,42,1);
+      box-shadow: var(--shadow-soft);
+      padding: 16px 16px 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      gap: 6px;
+    }
+
+    .card-title-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-subtitle {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .chip {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.35);
+      color: #9ca3af;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.98), rgba(15,23,42,0.96));
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .chip-green {
+      border-color: rgba(34,197,94,0.4);
+      color: #bbf7d0;
+      background: radial-gradient(circle at top, rgba(21,128,61,0.6), rgba(15,23,42,0.96));
+    }
+
+    .chip-danger {
+      border-color: rgba(248,113,113,0.55);
+      color: #fecaca;
+      background: radial-gradient(circle at top, rgba(127,29,29,0.7), rgba(15,23,42,0.96));
+    }
+
+    .chip-soft {
+      border-color: rgba(148,163,184,0.25);
+      color: #e5e7eb;
+      background: radial-gradient(circle at top, rgba(15,23,42,0.9), rgba(15,23,42,0.98));
+    }
+
+    .kpi-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .kpi {
+      flex: 1;
+      min-width: 110px;
+      border-radius: 12px;
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.9), rgba(15,23,42,0.98));
+      border: 1px solid rgba(31,41,55,1);
+      padding: 10px 10px 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .kpi-value {
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .kpi-meta {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .kpi-pill {
+      position: absolute;
+      inset: auto 8px 8px auto;
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(34,197,94,0.3);
+      background: rgba(22,101,52,0.55);
+      color: #bbf7d0;
+    }
+
+    .kpi-pill-warning {
+      border-color: rgba(251,191,36,0.4);
+      background: rgba(180,83,9,0.65);
+      color: #fef9c3;
+    }
+
+    .kpi-pill-info {
+      border-color: rgba(59,130,246,0.4);
+      background: rgba(30,64,175,0.7);
+      color: #dbeafe;
+    }
+
+    .divider {
+      height: 1px;
+      border-radius: 999px;
+      background: linear-gradient(to right, transparent, rgba(30,64,175,0.8), transparent);
+      margin: 10px 0;
+      opacity: 0.85;
+    }
+
+    .section-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+
+    .section-subtitle {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .pill-tab-row {
+      display: inline-flex;
+      gap: 4px;
+      border-radius: 999px;
+      padding: 2px;
+      border: 1px solid rgba(31,41,55,1);
+      background: rgba(15,23,42,0.98);
+    }
+
+    .pill-tab {
+      font-size: 10px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      color: #9ca3af;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .pill-tab.active {
+      background: radial-gradient(circle at top, rgba(37,99,235,1), rgba(15,23,42,0.95));
+      color: #e5e7eb;
+      box-shadow: 0 0 0 1px rgba(59,130,246,0.7);
+    }
+
+    .list {
+      list-style: none;
+      margin: 2px 0 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .list::-webkit-scrollbar-track {
+      background: rgba(15,23,42,1);
+    }
+
+    .list::-webkit-scrollbar-thumb {
+      background: rgba(30,64,175,0.7);
+      border-radius: 999px;
+    }
+
+    .list-item {
+      padding: 7px 8px;
+      border-radius: 11px;
+      border: 1px solid rgba(31,41,55,1);
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.96), rgba(15,23,42,1));
+      display: grid;
+      grid-template-columns: minmax(0, 1.9fr) minmax(0, 1.1fr);
+      column-gap: 8px;
+      row-gap: 2px;
+      align-items: center;
+      font-size: 11px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .list-item:hover {
+      transform: translateY(-1px);
+      border-color: rgba(59,130,246,0.9);
+      box-shadow: 0 14px 30px rgba(15,23,42,0.9);
+    }
+
+    .list-item-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .list-item-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .list-item-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+
+    .list-item-tag {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.35);
+      color: #9ca3af;
+    }
+
+    .list-item-sub {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .list-item-meta {
+      text-align: right;
+      font-size: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      color: #9ca3af;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    .badge-dot-green {
+      background: #22c55e;
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.24);
+    }
+
+    .badge-dot-yellow {
+      background: #eab308;
+      box-shadow: 0 0 0 3px rgba(234,179,8,0.24);
+    }
+
+    .badge-dot-red {
+      background: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239,68,68,0.24);
+    }
+
+    .status-pill {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(34,197,94,0.5);
+      color: #bbf7d0;
+      background: rgba(21,128,61,0.45);
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+    }
+
+    .status-pill-warning {
+      border-color: rgba(234,179,8,0.5);
+      color: #fef9c3;
+      background: rgba(180,83,9,0.4);
+    }
+
+    .status-pill-danger {
+      border-color: rgba(248,113,113,0.5);
+      color: #fee2e2;
+      background: rgba(127,29,29,0.5);
+    }
+
+    .status-pill-soft {
+      border-color: rgba(148,163,184,0.4);
+      color: #e5e7eb;
+      background: rgba(15,23,42,0.9);
+    }
+
+    .wallet-grid {
+      display: grid;
+      grid-template-columns: minmax(0,1.2fr) minmax(0,1.2fr);
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .wallet-block {
+      border-radius: 12px;
+      border: 1px solid rgba(31,41,55,1);
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.96), rgba(15,23,42,1));
+      padding: 8px 9px;
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .wallet-label {
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .wallet-value {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .wallet-meta {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 11px;
+    }
+
+    .form-label {
+      color: var(--muted);
+    }
+
+    .input {
+      border-radius: 8px;
+      border: 1px solid rgba(31,41,55,1);
+      background: rgba(15,23,42,0.96);
+      color: #e5e7eb;
+      font-size: 11px;
+      padding: 7px 8px;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .input:focus {
+      border-color: rgba(59,130,246,1);
+      box-shadow: 0 0 0 1px rgba(37,99,235,0.8);
+      background: rgba(15,23,42,1);
+    }
+
+    .input::placeholder {
+      color: rgba(148,163,184,0.6);
+    }
+
+    .input-sm {
+      padding: 6px 8px;
+      font-size: 11px;
+      border-radius: 999px;
+    }
+
+    textarea.input {
+      resize: vertical;
+      min-height: 70px;
+      max-height: 120px;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 7px 12px;
+      font-size: 11px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      outline: none;
+      transition: var(--transition);
+      background: radial-gradient(circle at top, var(--primary), var(--primary-dark));
+      color: #ecfdf5;
+      box-shadow:
+        0 0 0 1px rgba(34,197,94,0.6),
+        0 14px 30px rgba(16,185,129,0.45);
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-0.5px);
+      box-shadow:
+        0 0 0 1px rgba(22,163,74,0.8),
+        0 18px 36px rgba(16,185,129,0.6);
+      background: radial-gradient(circle at top, #22c55e, #15803d);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .btn-outline {
+      background: rgba(15,23,42,0.96);
+      color: #e5e7eb;
+      border-color: rgba(148,163,184,0.6);
+      box-shadow: none;
+    }
+
+    .btn-outline:hover:not(:disabled) {
+      background: radial-gradient(circle at top, rgba(30,64,175,0.9), rgba(15,23,42,1));
+      border-color: rgba(59,130,246,0.9);
+      box-shadow: 0 12px 28px rgba(15,23,42,0.9);
+    }
+
+    .btn-danger {
+      background: radial-gradient(circle at top, #ef4444, #b91c1c);
+      border-color: rgba(248,113,113,0.9);
+      box-shadow:
+        0 0 0 1px rgba(248,113,113,0.7),
+        0 18px 36px rgba(239,68,68,0.6);
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: radial-gradient(circle at top, #f97373, #7f1d1d);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: transparent;
+      color: #9ca3af;
+      padding-left: 4px;
+      padding-right: 4px;
+      box-shadow: none;
+    }
+
+    .btn-ghost:hover {
+      color: #e5e7eb;
+      background: rgba(15,23,42,0.9);
+    }
+
+    .badge-count {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.35);
+      background: rgba(15,23,42,0.96);
+      color: #9ca3af;
+    }
+
+    .alert {
+      border-radius: 10px;
+      border: 1px solid rgba(55,65,81,1);
+      background: rgba(15,23,42,0.96);
+      padding: 8px 9px;
+      font-size: 11px;
+      margin-top: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .alert-icon {
+      font-size: 13px;
+    }
+
+    .alert-success {
+      border-color: rgba(34,197,94,0.6);
+      background: rgba(22,101,52,0.55);
+      color: #bbf7d0;
+    }
+
+    .alert-danger {
+      border-color: rgba(239,68,68,0.7);
+      background: rgba(127,29,29,0.7);
+      color: #fee2e2;
+    }
+
+    .alert-warning {
+      border-color: rgba(234,179,8,0.7);
+      background: rgba(180,83,9,0.7);
+      color: #fef9c3;
+    }
+
+    .alert-info {
+      border-color: rgba(56,189,248,0.7);
+      background: rgba(30,64,175,0.7);
+      color: #e0f2fe;
+    }
+
+    .alert-text {
+      flex: 1;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 4px;
+      font-size: 10px;
+    }
+
+    .tag {
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.35);
+      background: rgba(15,23,42,0.96);
+      color: #9ca3af;
+    }
+
+    .tag-green {
+      border-color: rgba(34,197,94,0.5);
+      color: #bbf7d0;
+    }
+
+    .tag-yellow {
+      border-color: rgba(234,179,8,0.6);
+      color: #fef9c3;
+    }
+
+    .tag-red {
+      border-color: rgba(248,113,113,0.7);
+      color: #fee2e2;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 4px;
+      font-size: 11px;
+    }
+
+    .table thead th {
+      text-align: left;
+      padding: 6px 4px;
+      border-bottom: 1px solid rgba(31,41,55,1);
+      color: var(--muted);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .table tbody tr {
+      border-bottom: 1px solid rgba(15,23,42,1);
+    }
+
+    .table tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    .table tbody td {
+      padding: 6px 4px;
+      color: #e5e7eb;
+      vertical-align: top;
+    }
+
+    .table tbody tr:hover {
+      background: rgba(15,23,42,0.9);
+    }
+
+    .empty-state {
+      font-size: 11px;
+      color: var(--muted);
+      padding: 8px 0 2px;
+    }
+
+    .lozenge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.38);
+      background: rgba(15,23,42,0.96);
+      color: #9ca3af;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .lozenge-green {
+      border-color: rgba(34,197,94,0.6);
+      color: #bbf7d0;
+      background: rgba(22,101,52,0.6);
+    }
+
+    .lozenge-red {
+      border-color: rgba(248,113,113,0.7);
+      color: #fee2e2;
+      background: rgba(127,29,29,0.7);
+    }
+
+    .lozenge-yellow {
+      border-color: rgba(234,179,8,0.7);
+      color: #fef9c3;
+      background: rgba(180,83,9,0.7);
+    }
+
+    .badge-sm {
+      font-size: 9px;
+      padding: 1px 4px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.35);
+      background: rgba(15,23,42,0.96);
+      color: #9ca3af;
+    }
+
+    .role-switcher {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .role-select {
+      border-radius: 999px;
+      border: 1px solid rgba(31,41,55,1);
+      background: rgba(15,23,42,0.96);
+      color: #e5e7eb;
+      font-size: 11px;
+      padding: 4px 7px;
+      outline: none;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 14px 13px 12px;
+      }
+      .kpi {
+        min-width: 100px;
+      }
+      .wallet-grid {
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      border: 2px solid rgba(148,163,184,0.4);
+      border-top-color: #22c55e;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    footer.app-footer {
+      max-width: 1200px;
+      margin: 0 auto 14px;
+      padding: 0 16px;
+      font-size: 10px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      opacity: 0.75;
+    }
+
+    .dot-separator::before {
+      content: "•";
+      margin: 0 5px;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+<div class="glow-orbit"></div>
+<div class="app-shell">
+  <div class="app-container">
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-logo">B</div>
+        <div class="brand-text">
+          <div class="brand-title">
+            Binly
+            <span class="dot"></span>
+            <span class="badge-sm">Chennai</span>
+          </div>
+          <div class="brand-sub">Smart waste, live credits, real-time routes.</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="pill" id="session-pill">
+          <span class="pill-dot"></span>
+          <span id="session-pill-text">Not authenticated</span>
+        </div>
+        <div class="pill pill-warning role-switcher">
+          <span class="pill-dot"></span>
+          View as
+          <select id="roleSelect" class="role-select">
+            <option value="citizen">Citizen</option>
+            <option value="collector">Collector</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <nav class="main-nav">
+      <button class="nav-item active" data-page="loginPage">
+        <span>Auth & Session</span>
+        <span class="badge">JWT</span>
+      </button>
+      <button class="nav-item" data-page="citizenPage">
+        <span>Citizen</span>
+        <span class="badge">Dashboard</span>
+      </button>
+      <button class="nav-item" data-page="collectorPage">
+        <span>Collector</span>
+        <span class="badge">Route & Picks</span>
+      </button>
+      <button class="nav-item" data-page="adminPage">
+        <span>Admin</span>
+        <span class="badge">Command Center</span>
+      </button>
+    </nav>
+
+    <!-- AUTH / LOGIN PAGE -->
+    <main id="loginPage" class="page active fade-in">
+      <div class="layout-two-column">
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-row">
+              <div class="card-title">
+                Login & Token
+                <span class="chip-soft">Directly wired into /api/auth</span>
+              </div>
+              <div class="card-subtitle">
+                Use the seeded accounts from <code>initDatabase.js</code> or freshly registered users.
+              </div>
+            </div>
+            <div class="chip">
+              <span class="badge-dot badge-dot-green"></span>
+              JWT in Authorization header
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Role</label>
+              <select id="loginRole" class="input input-sm">
+                <option value="citizen">Citizen (phone + OTP)</option>
+                <option value="collector">Collector (phone + OTP)</option>
+                <option value="admin">Admin (email + password)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">
+                Phone / Email
+              </label>
+              <input id="loginIdentifier" class="input input-sm" placeholder="9876543210 or admin@binly.in" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Password / OTP</label>
+              <input id="loginSecret" class="input input-sm" placeholder="admin123 or any 6-digit OTP" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Quick actions</label>
+              <div style="display:flex; gap:6px;">
+                <button class="btn-outline btn" id="fillCitizenDemo">Citizen demo</button>
+                <button class="btn-outline btn" id="fillCollectorDemo">Collector demo</button>
+                <button class="btn-outline btn" id="fillAdminDemo">Admin demo</button>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:10px; display:flex; align-items:center; gap:8px;">
+            <button id="loginBtn" class="btn">
+              <span id="loginBtnText">Sign in & store token</span>
+              <div id="loginSpinner" class="spinner" style="display:none;"></div>
+            </button>
+            <button id="clearSessionBtn" class="btn-outline">
+              Clear session
+            </button>
+          </div>
+
+          <div id="loginAlert" class="alert" style="display:none;"></div>
+
+          <div class="divider"></div>
+          <div class="section-title-row">
+            <div>
+              <div class="section-title">Current session payload</div>
+              <div class="section-subtitle">
+                Mirrors the token claims and resolved user role from backend.
+              </div>
+            </div>
+            <span class="badge-count" id="tokenStatusBadge">No token</span>
+          </div>
+
+          <pre id="sessionDebug" style="margin-top:4px; font-size:11px; background:rgba(15,23,42,0.97); border-radius:10px; padding:8px; border:1px solid rgba(15,23,42,1); max-height:160px; overflow:auto; white-space:pre-wrap;"></pre>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-row">
+              <div class="card-title">
+                Registration (citizen / collector / admin)
+                <span class="chip-soft">Writes into SQLite via /api/auth/register</span>
+              </div>
+              <div class="card-subtitle">
+                Citizen registration auto-creates a household & credit wallet.
+              </div>
+            </div>
+            <div class="chip">
+              <span class="badge-dot badge-dot-yellow"></span>
+              Minimal happy-path UX
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Name</label>
+              <input id="regName" class="input input-sm" placeholder="Full name" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Role</label>
+              <select id="regRole" class="input input-sm">
+                <option value="citizen">Citizen</option>
+                <option value="collector">Collector</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Phone (citizen / collector)</label>
+              <input id="regPhone" class="input input-sm" placeholder="10-digit phone" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email (admin)</label>
+              <input id="regEmail" class="input input-sm" placeholder="admin@binly.in" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Password (admin)</label>
+              <input id="regPassword" class="input input-sm" placeholder="Strong password" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Address (citizen)</label>
+              <input id="regAddress" class="input input-sm" placeholder="12, Anna Street" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Area (citizen)</label>
+              <input id="regArea" class="input input-sm" placeholder="T. Nagar" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ward (citizen)</label>
+              <input id="regWard" class="input input-sm" placeholder="Ward 1" />
+            </div>
+          </div>
+
+          <div style="margin-top:10px; display:flex; gap:8px;">
+            <button id="registerBtn" class="btn">
+              <span id="registerBtnText">Register & auto-login</span>
+              <div id="registerSpinner" class="spinner" style="display:none;"></div>
+            </button>
+          </div>
+
+          <div id="registerAlert" class="alert" style="display:none;"></div>
+
+          <div class="divider"></div>
+          <div class="section-title-row">
+            <div class="section-title">Notes</div>
+          </div>
+          <ul class="list" style="max-height:110px;">
+            <li class="list-item" style="grid-template-columns:minmax(0,1fr);">
+              <div class="list-item-main">
+                <div class="list-item-title-row">
+                  <div class="list-item-title">Citizen registration</div>
+                  <span class="lozenge-green">Auto household + QR + credits wallet</span>
+                </div>
+                <div class="list-item-sub">
+                  Uses <code>Household.generateHouseholdId()</code> and inserts into SQLite; then <code>credits</code> row is created.
+                </div>
+              </div>
+            </li>
+            <li class="list-item" style="grid-template-columns:minmax(0,1fr);">
+              <div class="list-item-main">
+                <div class="list-item-title-row">
+                  <div class="list-item-title">JWT propagation</div>
+                  <span class="lozenge">Stored in <code>localStorage</code> & sent via <code>Authorization: Bearer</code>.</span>
+                </div>
+                <div class="list-item-sub">
+                  Every protected call in Citizen / Collector / Admin tabs reads that same token.
+                </div>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </main>
+
+    <!-- CITIZEN PAGE -->
+    <main id="citizenPage" class="page">
+      <div class="layout-two-column">
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-row">
+              <div class="card-title">
+                Citizen dashboard
+                <span class="chip-green" id="citizenStatusChip">Status: —</span>
+              </div>
+              <div class="card-subtitle">
+                Pulls live data from
+                <code>/api/citizen/dashboard</code>,
+                <code>/api/citizen/wallet</code>,
+                <code>/api/citizen/leaderboard</code>.
+              </div>
+            </div>
+            <button id="refreshCitizenBtn" class="btn-outline btn">
+              <span>Refresh</span>
+              <div id="citizenRefreshSpinner" class="spinner" style="display:none;"></div>
+            </button>
+          </div>
+
+          <div class="kpi-row">
+            <div class="kpi">
+              <div class="kpi-label">Credits balance</div>
+              <div class="kpi-value" id="citizenCredits">—</div>
+              <div class="kpi-meta">
+                Rupee value: <span id="citizenCreditsValue">—</span>
+              </div>
+              <div class="kpi-pill" id="citizenStreakPill">Segregation streak: —</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Pickups this month</div>
+              <div class="kpi-value" id="citizenMonthlyPickups">—</div>
+              <div class="kpi-meta" id="citizenLastPickupMeta">Last pickup: —</div>
+              <div class="kpi-pill-warning" id="citizenQualityPill">Today: —</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+          <div class="section-title-row">
+            <div>
+              <div class="section-title">Wallet & transactions</div>
+              <div class="section-subtitle">
+                Backed by <code>credits</code> and <code>credit_transactions</code> tables.
+              </div>
+            </div>
+            <span class="badge-count" id="citizenTxnCount">0 txns</span>
+          </div>
+
+          <div class="wallet-grid">
+            <div class="wallet-block">
+              <div class="wallet-label">
+                <span>Wallet</span>
+                <span class="lozenge-green">Live</span>
+              </div>
+              <div class="wallet-value" id="citizenWalletBalance">—</div>
+              <div class="wallet-meta">
+                Earned so far: <span id="citizenWalletEarned">—</span>,
+                Redeemed: <span id="citizenWalletRedeemed">—</span>
+              </div>
+            </div>
+            <div class="wallet-block">
+              <div class="wallet-label">
+                <span>Redeem credits</span>
+                <span class="badge-sm">/api/citizen/redeem-credits</span>
+              </div>
+              <div style="display:flex; gap:6px; margin-top:4px;">
+                <input id="redeemAmount" class="input input-sm" placeholder="Credits to redeem" />
+                <button id="redeemBtn" class="btn">
+                  <span id="redeemBtnText">Redeem</span>
+                  <div id="redeemSpinner" class="spinner" style="display:none;"></div>
+                </button>
+              </div>
+              <div class="wallet-meta" id="redeemMeta">
+                Will be converted using configured rupee rate.
+              </div>
+            </div>
+          </div>
+
+          <div id="citizenWalletAlert" class="alert" style="display:none;"></div>
+
+          <div class="divider"></div>
+          <div class="section-title-row">
+            <div>
+              <div class="section-title">Recent pickups (household)</div>
+              <div class="section-subtitle">Fetched via <code>/api/citizen/history</code>.</div>
+            </div>
+          </div>
+
+          <div id="citizenHistoryWrapper">
+            <div class="empty-state" id="citizenHistoryEmpty">No pickups yet for this household.</div>
+            <table class="table" id="citizenHistoryTable" style="display:none;">
+              <thead>
+              <tr>
+                <th>Date</th>
+                <th>Breakdown</th>
+                <th>Quality</th>
+                <th>Credits</th>
+              </tr>
+              </thead>
+              <tbody id="citizenHistoryTbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-row">
+              <div class="card-title">
+                QR, leaderboard & AI tips
+                <span class="chip-soft">Additional citizen endpoints</span>
+              </div>
+              <div class="card-subtitle">
+                QR is fetched from <code>/api/citizen/qr-code</code>.
+              </div>
+            </div>
+            <button id="citizenExtrasBtn" class="btn-outline btn">
+              Load extras
+            </button>
+          </div>
+
+          <div id="citizenExtrasAlert" class="alert" style="display:none;"></div>
+
+          <div class="section-title-row">
+            <div class="section-title">Household QR & metadata</div>
+          </div>
+          <div id="citizenQRWrapper" class="empty-state">
+            Not loaded.
+          </div>
+
+          <div class="divider"></div>
+          <div class="section-title-row">
+            <div class="section-title">Area leaderboard</div>
+            <div class="section-subtitle">
+              Top earners from <code>credits</code> and <code>households</code>.
+            </div>
+          </div>
+          <ul id="citizenLeaderboardList" class="list" style="max-height:140px;"></ul>
+
+          <div class="divider"></div>
+          <div class="section-title-row">
+            <div class="section-title">Compost quick-start</div>
+            <span class="badge-sm">/api/citizen/compost-guide</span>
+          </div>
+          <div id="citizenCompostWrapper" class="empty-state">
+            Click “Load extras” to show Binly’s compost playbook.
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- COLLECTOR PAGE -->
+    <main id="collectorPage" class="page">
+      <div class="layout-two-column">
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-row">
+              <div class="card-title">
+                Collector route & earnings
+                <span class="chip-soft">Backed by /api/collector/*</span>
+              </div>
+              <div class="card-subtitle">
+                Requires a collector JWT; pulls today’s route, pickups & wallet from SQLite.
+              </div>
+            </div>
+            <button id="collectorRefreshBtn" class="btn-outline btn">
+              <span>Refresh</span>
+              <div id="collectorSpinner" class="spinner" style="display:none;"></div>
+            </button>
+          </div>
+
+          <div class="kpi-row">
+            <div class="kpi">
+              <div class="kpi-label">Pickups completed today</div>
+              <div class="kpi-value" id="collectorTodayPickups">—</div>
+              <div class="kpi-meta" id="collectorRouteMeta">Route: —</div>
+              <div class="kpi-pill-info" id="collectorQualityScore">Quality score: —</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Today’s earnings</div>
+              <div class="kpi-value" id="collectorTodayEarnings">—</div>
+              <div class="kpi-meta" id="collectorBonusMeta">Base vs bonus: —</div>
+              <div class="kpi-pill" id="collectorMonthMeta">This month: —</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+          <div class="section-title-row">
+            <div>
+              <div class="section-title">Route households</div>
+              <div class="section-subtitle">Live from <code>/api/collector/route</code>.</div>
+            </div>
+            <span class="badge-count" id="collectorRouteCounts">0 pending • 0 done</span>
+          </div>
+
+          <div id="collectorRouteWrapper">
+            <div class="section-subtitle" style="margin-top:4px;">Pending stops</div>
+            <ul id="collectorPendingList" class="list" style="max-height:120px;"></ul>
+
+            <div class="section-subtitle" style="margin-top:8px;">Completed pickups (today)</div>
+            <ul id="collectorCompletedList" class="list" style="max-height:150px;"></ul>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-row">
+              <div class="card-title">
+                Record pickup
+                <span class="chip-soft">/api/collector/complete-pickup</span>
+              </div>
+              <div class="card-subtitle">
+                Uses credit engine to credit citizen & compute collector payout.
+              </div>
+            </div>
+            <div class="chip">
+              <span class="badge-dot badge-dot-yellow"></span>
+              Enter household ID + weights
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Household ID (from QR or route)</label>
+            <input id="pickupHouseholdId" class="input input-sm" placeholder="CHN-TNG-45892" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Wet waste (kg)</label>
+              <input id="pickupWet" class="input input-sm" placeholder="e.g. 2.5" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Dry waste (kg)</label>
+              <input id="pickupDry" class="input input-sm" placeholder="e.g. 1.2" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Recyclables (kg)</label>
+              <input id="pickupRecyclables" class="input input-sm" placeholder="e.g. 0.8" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">E‑waste (kg)</label>
+              <input id="pickupEwaste" class="input input-sm" placeholder="e.g. 0.1" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Quality rating</label>
+              <select id="pickupQuality" class="input input-sm">
+                <option value="good">Good</option>
+                <option value="medium">Medium</option>
+                <option value="poor">Poor</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Contamination detected?</label>
+              <select id="pickupContamination" class="input input-sm">
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-top:10px; display:flex; gap:8px;">
+            <button id="pickupSubmitBtn" class="btn">
+              <span id="pickupSubmitText">Record pickup</span>
+              <div id="pickupSpinner" class="spinner" style="display:none;"></div>
+            </button>
+          </div>
+
+          <div id="pickupAlert" class="alert" style="display:none;"></div>
+
+          <div class="divider"></div>
+          <div class="section-title-row">
+            <div class="section-title">Wallet heatmap</div>
+            <span class="badge-sm">/api/collector/wallet</span>
+          </div>
+          <div id="collectorWalletWrapper" class="empty-state">
+            Refresh to view live earnings breakdown.
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- ADMIN PAGE -->
+    <main id="adminPage" class="page">
+      <div class="layout-two-column">
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-row">
+              <div class="card-title">
+                Command center
+                <span class="chip-soft">Admin-only KPIs</span>
+              </div>
+              <div class="card-subtitle">
+                Uses <code>/api/admin/dashboard</code>, <code>/api/admin/analytics</code>, and contamination hotspots.
+              </div>
+            </div>
+            <button id="adminRefreshBtn" class="btn-outline btn">
+              <span>Refresh</span>
+              <div id="adminSpinner" class="spinner" style="display:none;"></div>
+            </button>
+          </div>
+
+          <div class="kpi-row">
+            <div class="kpi">
+              <div class="kpi-label">Segregation rate (30d)</div>
+              <div class="kpi-value" id="adminSegregationRate">—</div>
+              <div class="kpi-meta">
+                Contamination: <span id="adminContaminationRate">—</span>
+              </div>
+              <div class="kpi-pill" id="adminDiversion">Landfill diversion: —</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Active footprint</div>
+              <div class="kpi-value" id="adminActiveHouseholds">—</div>
+              <div class="kpi-meta">
+                Active collectors: <span id="adminActiveCollectors">—</span>,
+                Recyclables (kg): <span id="adminRecyclables">—</span>
+              </div>
+              <div class="kpi-pill-info" id="adminTimeWindow">Window: last 30 days</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+          <div class="section-title-row">
+            <div>
+              <div class="section-title">Ward analytics</div>
+              <div class="section-subtitle">/api/admin/analytics with optional ward filter.</div>
+            </div>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <input id="adminWardInput" class="input input-sm" style="width:110px;" placeholder="Ward 1" />
+              <button id="adminWardBtn" class="btn-outline btn">Apply ward</button>
+            </div>
+          </div>
+
+          <div id="adminAnalyticsWrapper" class="empty-state">
+            No analytics loaded yet.
+          </div>
+
+          <div class="divider"></div>
+          <div class="section-title-row">
+            <div class="section-title">Contamination hotspots</div>
+            <span class="badge-sm">/api/admin/contamination-hotspots</span>
+          </div>
+          <ul id="adminHotspotsList" class="list" style="max-height:160px;"></ul>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-row">
+              <div class="card-title">
+                Routes & households
+                <span class="chip-soft">Admin management APIs</span>
+              </div>
+              <div class="card-subtitle">
+                Read from <code>/api/admin/routes</code>, write via <code>/api/admin/household/create</code>.
+              </div>
+            </div>
+            <div class="chip">
+              <span class="badge-dot badge-dot-green"></span>
+              Routes are still SQLite-backed.
+            </div>
+          </div>
+
+          <div class="section-title-row">
+            <div class="section-title">Active routes</div>
+            <span class="badge-count" id="adminRoutesCount">0 routes</span>
+          </div>
+
+          <div id="adminRoutesWrapper">
+            <table class="table">
+              <thead>
+              <tr>
+                <th>Route</th>
+                <th>Area</th>
+                <th>Households</th>
+                <th>Distance</th>
+              </tr>
+              </thead>
+              <tbody id="adminRoutesTbody"></tbody>
+            </table>
+          </div>
+
+          <div class="divider"></div>
+          <div class="section-title-row">
+            <div class="section-title">Create household</div>
+            <span class="badge-sm">Auto QR & citizen user</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Name</label>
+              <input id="adminHouseName" class="input input-sm" placeholder="Household contact" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input id="adminHousePhone" class="input input-sm" placeholder="9876543210" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Address</label>
+              <input id="adminHouseAddress" class="input input-sm" placeholder="12, Anna Street" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Area</label>
+              <input id="adminHouseArea" class="input input-sm" placeholder="T. Nagar" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Ward</label>
+              <input id="adminHouseWard" class="input input-sm" placeholder="Ward 1" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Lat, Lng (optional)</label>
+              <input id="adminHouseLatLng" class="input input-sm" placeholder="13.042, 80.23" />
+            </div>
+          </div>
+
+          <div style="margin-top:10px; display:flex; gap:8px;">
+            <button id="adminCreateHouseBtn" class="btn">
+              <span id="adminCreateHouseText">Create household</span>
+              <div id="adminCreateHouseSpinner" class="spinner" style="display:none;"></div>
+            </button>
+          </div>
+
+          <div id="adminHouseAlert" class="alert" style="display:none;"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <footer class="app-footer">
+    <div>Binly Backend at <code>http://localhost:3000</code> • Frontend talks to <code>/api/*</code> via fetch.</div>
+    <div>JWT stored in <code>localStorage</code> & sent as <code>Authorization: Bearer &lt;token&gt;</code>.</div>
+  </footer>
+</div>
+
+<script>
+  const API_BASE = "";
+
+  function getToken() {
+    return localStorage.getItem("binly_token") || "";
+  }
+
+  function setToken(token) {
+    if (token) {
+      localStorage.setItem("binly_token", token);
+    } else {
+      localStorage.removeItem("binly_token");
+    }
+    syncSessionUI();
+  }
+
+  async function apiFetch(path, options = {}) {
+    const url = API_BASE + path;
+    const headers = options.headers || {};
+    if (getToken()) {
+      headers["Authorization"] = "Bearer " + getToken();
+    }
+    if (!headers["Content-Type"] && options.body && !(options.body instanceof FormData)) {
+      headers["Content-Type"] = "application/json";
+    }
+    const finalOptions = {
+      method: options.method || "GET",
+      headers,
+      body: options.body && !(options.body instanceof FormData) ? JSON.stringify(options.body) : options.body,
+    };
+    const res = await fetch(url, finalOptions);
+    let data;
+    try {
+      data = await res.json();
+    } catch (e) {
+      data = null;
+    }
+    if (!res.ok) {
+      const message = data && (data.error || data.message) ? (data.error || data.message) : "Request failed";
+      const error = new Error(message);
+      error.status = res.status;
+      error.payload = data;
+      throw error;
+    }
+    return data;
+  }
+
+  function syncSessionUI() {
+    const token = getToken();
+    const sessionPill = document.getElementById("session-pill");
+    const sessionText = document.getElementById("session-pill-text");
+    const debugEl = document.getElementById("sessionDebug");
+    const tokenStatus = document.getElementById("tokenStatusBadge");
+
+    if (!token) {
+      sessionPill.classList.remove("pill-warning");
+      sessionPill.classList.add("pill");
+      sessionText.textContent = "Not authenticated";
+      tokenStatus.textContent = "No token";
+      debugEl.textContent = "No active JWT stored. Login using any role to start the data flow.";
+      return;
+    }
+
+    sessionPill.classList.add("pill-warning");
+    sessionText.textContent = "Token stored – role-aware endpoints enabled";
+    tokenStatus.textContent = "Token present";
+
+    const parts = token.split(".");
+    if (parts.length === 3) {
+      try {
+        const payload = JSON.parse(atob(parts[1]));
+        debugEl.textContent = JSON.stringify(payload, null, 2);
+      } catch (e) {
+        debugEl.textContent = "Token present but payload could not be decoded.";
+      }
+    } else {
+      debugEl.textContent = "Token present. Unable to decode payload.";
+    }
+  }
+
+  document.querySelectorAll(".nav-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const page = btn.getAttribute("data-page");
+      document.querySelectorAll(".nav-item").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      document.querySelectorAll(".page").forEach((p) => p.classList.remove("active"));
+      document.getElementById(page).classList.add("active");
+    });
+  });
+
+  document.getElementById("roleSelect").addEventListener("change", (e) => {
+    const role = e.target.value;
+    const mapping = {
+      citizen: "citizenPage",
+      collector: "collectorPage",
+      admin: "adminPage",
+    };
+    const pageId = mapping[role] || "citizenPage";
+    document.querySelectorAll(".nav-item").forEach((b) => {
+      b.classList.remove("active");
+      if (b.getAttribute("data-page") === pageId) b.classList.add("active");
+      if (b.getAttribute("data-page") === "loginPage" && !getToken()) b.classList.add("active");
+    });
+    document.querySelectorAll(".page").forEach((p) => p.classList.remove("active"));
+    if (!getToken()) {
+      document.getElementById("loginPage").classList.add("active");
+    } else {
+      document.getElementById(pageId).classList.add("active");
+    }
+  });
+
+  function setAlert(el, type, message) {
+    if (!el) return;
+    el.classList.remove("alert-success", "alert-danger", "alert-warning", "alert-info");
+    if (!message) {
+      el.style.display = "none";
+      return;
+    }
+    if (type === "success") el.classList.add("alert-success");
+    else if (type === "danger") el.classList.add("alert-danger");
+    else if (type === "warning") el.classList.add("alert-warning");
+    else el.classList.add("alert-info");
+    el.innerHTML = '<span class="alert-icon">●</span><div class="alert-text">' + message + "</div>";
+    el.style.display = "flex";
+  }
+
+  function setLoading(btn, spinner, loading, textEl, label) {
+    if (loading) {
+      btn.disabled = true;
+      spinner.style.display = "block";
+      if (textEl && label) textEl.textContent = label;
+    } else {
+      btn.disabled = false;
+      spinner.style.display = "none";
+    }
+  }
+
+  (function setupAuth() {
+    const loginRole = document.getElementById("loginRole");
+    const loginId = document.getElementById("loginIdentifier");
+    const loginSecret = document.getElementById("loginSecret");
+    const loginBtn = document.getElementById("loginBtn");
+    const loginSpinner = document.getElementById("loginSpinner");
+    const loginBtnText = document.getElementById("loginBtnText");
+    const loginAlert = document.getElementById("loginAlert");
+
+    const clearSessionBtn = document.getElementById("clearSessionBtn");
+
+    const regName = document.getElementById("regName");
+    const regRole = document.getElementById("regRole");
+    const regPhone = document.getElementById("regPhone");
+    const regEmail = document.getElementById("regEmail");
+    const regPassword = document.getElementById("regPassword");
+    const regAddress = document.getElementById("regAddress");
+    const regArea = document.getElementById("regArea");
+    const regWard = document.getElementById("regWard");
+    const registerBtn = document.getElementById("registerBtn");
+    const registerSpinner = document.getElementById("registerSpinner");
+    const registerBtnText = document.getElementById("registerBtnText");
+    const registerAlert = document.getElementById("registerAlert");
+
+    document.getElementById("fillCitizenDemo").addEventListener("click", () => {
+      loginRole.value = "citizen";
+      loginId.value = "9876543210";
+      loginSecret.value = "123456";
+    });
+
+    document.getElementById("fillCollectorDemo").addEventListener("click", () => {
+      loginRole.value = "collector";
+      loginId.value = "9876543211";
+      loginSecret.value = "123456";
+    });
+
+    document.getElementById("fillAdminDemo").addEventListener("click", () => {
+      loginRole.value = "admin";
+      loginId.value = "admin@binly.in";
+      loginSecret.value = "admin123";
+    });
+
+    loginBtn.addEventListener("click", async () => {
+      setAlert(loginAlert);
+      const role = loginRole.value;
+      const identifier = loginId.value.trim();
+      const secret = loginSecret.value.trim();
+
+      if (!identifier || !secret) {
+        setAlert(loginAlert, "warning", "Please provide both identifier and password/OTP.");
+        return;
+      }
+
+      setLoading(loginBtn, loginSpinner, true, loginBtnText, "Signing in…");
+
+      try {
+        let payload = {};
+        if (role === "admin") {
+          payload = { email: identifier, password: secret, role: "admin" };
+        } else {
+          payload = { phone: identifier, otp: secret };
+        }
+
+        let data;
+        if (role === "admin") {
+          data = await apiFetch("/api/auth/login", { method: "POST", body: payload });
+        } else {
+          await apiFetch("/api/auth/login", {
+            method: "POST",
+            body: { phone: identifier, password: "otp-flow-placeholder" },
+          });
+          data = await apiFetch("/api/auth/verify-otp", { method: "POST", body: { phone: identifier, otp: secret } });
+        }
+
+        if (data && data.token) {
+          setToken(data.token);
+          setAlert(loginAlert, "success", "Logged in successfully as " + (data.user?.role || role) + ".");
+        } else {
+          setAlert(loginAlert, "danger", "Login succeeded but response did not include a token.");
+        }
+      } catch (err) {
+        setAlert(
+          loginAlert,
+          "danger",
+          "Login failed (" + (err.status || "network") + "): " + (err.message || "Unable to authenticate.")
+        );
+        setToken("");
+      } finally {
+        setLoading(loginBtn, loginSpinner, false, loginBtnText, "Sign in & store token");
+      }
+    });
+
+    clearSessionBtn.addEventListener("click", () => {
+      setToken("");
+      setAlert(loginAlert, "info", "Session cleared. All role-specific endpoints now require a fresh login.");
+    });
+
+    registerBtn.addEventListener("click", async () => {
+      setAlert(registerAlert);
+      const role = regRole.value;
+      const body = {
+        name: regName.value.trim(),
+        role,
+        phone: regPhone.value.trim() || undefined,
+        email: regEmail.value.trim() || undefined,
+        password: regPassword.value.trim() || undefined,
+        address: regAddress.value.trim() || undefined,
+        area: regArea.value.trim() || undefined,
+        ward: regWard.value.trim() || undefined,
+      };
+
+      if (!body.name || !body.role) {
+        setAlert(registerAlert, "warning", "Name and role are required.");
+        return;
+      }
+      if (role === "admin" && !body.email) {
+        setAlert(registerAlert, "warning", "Admin registration requires an email.");
+        return;
+      }
+      if ((role === "citizen" || role === "collector") && !body.phone) {
+        setAlert(registerAlert, "warning", "Citizen / collector registration requires a phone number.");
+        return;
+      }
+
+      setLoading(registerBtn, registerSpinner, true, registerBtnText, "Registering…");
+
+      try {
+        const data = await apiFetch("/api/auth/register", { method: "POST", body });
+        if (data && data.token) {
+          setToken(data.token);
+          setAlert(
+            registerAlert,
+            "success",
+            "Registered as " + (data.user?.role || role) + " and logged in. Household & credits created when applicable."
+          );
+        } else {
+          setAlert(registerAlert, "danger", "Registration succeeded but token was not returned.");
+        }
+      } catch (err) {
+        setAlert(
+          registerAlert,
+          "danger",
+          "Registration failed (" + (err.status || "network") + "): " + (err.message || "Unable to register.")
+        );
+      } finally {
+        setLoading(registerBtn, registerSpinner, false, registerBtnText, "Register & auto-login");
+      }
+    });
+  })();
+
+  async function loadCitizenDashboard() {
+    const statusChip = document.getElementById("citizenStatusChip");
+    const creditsEl = document.getElementById("citizenCredits");
+    const creditsValEl = document.getElementById("citizenCreditsValue");
+    const monthlyEl = document.getElementById("citizenMonthlyPickups");
+    const lastPickupMeta = document.getElementById("citizenLastPickupMeta");
+    const streakPill = document.getElementById("citizenStreakPill");
+    const qualityPill = document.getElementById("citizenQualityPill");
+
+    const walletBalanceEl = document.getElementById("citizenWalletBalance");
+    const walletEarnedEl = document.getElementById("citizenWalletEarned");
+    const walletRedeemedEl = document.getElementById("citizenWalletRedeemed");
+    const txnCountEl = document.getElementById("citizenTxnCount");
+
+    const historyEmpty = document.getElementById("citizenHistoryEmpty");
+    const historyTable = document.getElementById("citizenHistoryTable");
+    const historyBody = document.getElementById("citizenHistoryTbody");
+    const walletAlert = document.getElementById("citizenWalletAlert");
+
+    try {
+      const dash = await apiFetch("/api/citizen/dashboard");
+      const wallet = await apiFetch("/api/citizen/wallet");
+      const history = await apiFetch("/api/citizen/history");
+
+      const status = dash.status || "UNKNOWN";
+      statusChip.textContent = "Status: " + status;
+      if (status === "GREEN") {
+        statusChip.classList.add("chip-green");
+        statusChip.classList.remove("chip-danger");
+      } else if (status === "RED") {
+        statusChip.classList.add("chip-danger");
+        statusChip.classList.remove("chip-green");
+      }
+
+      creditsEl.textContent = dash.credits ?? 0;
+      creditsValEl.textContent = "₹" + (dash.creditValue ?? "0.00");
+      monthlyEl.textContent = dash.monthlyPickups ?? 0;
+      lastPickupMeta.textContent =
+        "Household: " +
+        (dash.household?.id || "—") +
+        " • " +
+        (dash.household?.address || "No address") +
+        ", " +
+        (dash.household?.area || "—");
+      streakPill.textContent = "Segregation streak: contextual in backend";
+      qualityPill.textContent = "Today: " + status;
+
+      walletBalanceEl.textContent = wallet.balance ?? 0;
+      walletEarnedEl.textContent = wallet.totalEarned ?? 0;
+      walletRedeemedEl.textContent = wallet.totalRedeemed ?? 0;
+      txnCountEl.textContent = (wallet.transactions?.length || 0) + " txns";
+
+      if (!history || history.length === 0) {
+        historyTable.style.display = "none";
+        historyEmpty.style.display = "block";
+      } else {
+        historyBody.innerHTML = "";
+        history.forEach((p) => {
+          const tr = document.createElement("tr");
+          const date = p.pickup_date ? new Date(p.pickup_date).toLocaleString() : "—";
+          const breakdown =
+            (p.wet_waste_kg || 0) +
+            " kg wet, " +
+            (p.dry_waste_kg || 0) +
+            " kg dry, " +
+            (p.recyclables_kg || 0) +
+            " kg rec, " +
+            (p.ewaste_kg || 0) +
+            " kg e-waste";
+          const quality = p.quality_rating || "—";
+          const credits = p.credits_earned ?? "—";
+          tr.innerHTML =
+            "<td>" +
+            date +
+            "</td><td>" +
+            breakdown +
+            "</td><td>" +
+            quality +
+            (p.contamination_detected ? " (contaminated)" : "") +
+            "</td><td>" +
+            credits +
+            "</td>";
+          historyBody.appendChild(tr);
+        });
+        historyEmpty.style.display = "none";
+        historyTable.style.display = "table";
+      }
+
+      setAlert(walletAlert);
+    } catch (err) {
+      setAlert(
+        walletAlert,
+        "danger",
+        "Citizen dashboard fetch failed (" +
+          (err.status || "network") +
+          "): " +
+          (err.message || "Backend did not respond.")
+      );
+    }
+  }
+
+  async function loadCitizenExtras() {
+    const qrWrapper = document.getElementById("citizenQRWrapper");
+    const leaderboardList = document.getElementById("citizenLeaderboardList");
+    const compostWrapper = document.getElementById("citizenCompostWrapper");
+    const extrasAlert = document.getElementById("citizenExtrasAlert");
+
+    try {
+      const qr = await apiFetch("/api/citizen/qr-code");
+      const leaderboard = await apiFetch("/api/citizen/leaderboard");
+      const compost = await apiFetch("/api/citizen/compost-guide");
+
+      qrWrapper.innerHTML =
+        '<div class="alert alert-info" style="display:flex;">' +
+        '<span class="alert-icon">◉</span>' +
+        '<div class="alert-text">' +
+        "<strong>Household:</strong> " +
+        (qr.householdId || "—") +
+        "<br><strong>Address:</strong> " +
+        (qr.address || "—") +
+        ", " +
+        (qr.area || "—") +
+        ", " +
+        (qr.ward || "—") +
+        "<br/><br/>QR stored as base64 string in DB; use this in the native mobile/collector app to scan and attach pickups." +
+        "</div></div>";
+
+      leaderboardList.innerHTML = "";
+      if (Array.isArray(leaderboard.leaderboard || leaderboard)) {
+        const list = leaderboard.leaderboard || leaderboard;
+        list.forEach((entry) => {
+          const li = document.createElement("li");
+          li.className = "list-item";
+          li.style.gridTemplateColumns = "minmax(0,2fr) minmax(0,1fr)";
+          li.innerHTML =
+            '<div class="list-item-main">' +
+            '<div class="list-item-title-row">' +
+            '<div class="list-item-title">' +
+            "#" +
+            entry.rank +
+            " · " +
+            (entry.name || "—") +
+            "</div>" +
+            '<span class="list-item-tag">' +
+            (entry.address || "—") +
+            "</span>" +
+            "</div>" +
+            '<div class="list-item-sub">Area champion · Total credits: ' +
+            (entry.credits ?? entry.total_earned ?? "—") +
+            "</div>" +
+            "</div>" +
+            '<div class="list-item-meta">' +
+            '<span class="status-pill-soft">credits: ' +
+            (entry.credits ?? entry.total_earned ?? "—") +
+            "</span>" +
+            "</div>";
+          leaderboardList.appendChild(li);
+        });
+      }
+
+      const quickStart = compost.quickStart || compost.quick_start || [];
+      compostWrapper.innerHTML =
+        "<div class='section-subtitle'>Quick start:</div>" +
+        "<ul class='list' style='max-height:90px; margin-top:4px;'>" +
+        quickStart.map((item) => "<li class='list-item' style='grid-template-columns:minmax(0,1fr);'>" +
+          "<div class='list-item-main'>" +
+          "<div class='list-item-title'>" +
+          item +
+          "</div></div></li>").join("") +
+        "</ul>";
+
+      setAlert(extrasAlert, "success", "Citizen extras loaded from live backend endpoints.");
+    } catch (err) {
+      setAlert(
+        extrasAlert,
+        "danger",
+        "Failed to load QR / leaderboard / compost guide (" +
+          (err.status || "network") +
+          "): " +
+          (err.message || "Backend did not respond.")
+      );
+    }
+  }
+
+  (function setupCitizen() {
+    const refreshBtn = document.getElementById("refreshCitizenBtn");
+    const refreshSpinner = document.getElementById("citizenRefreshSpinner");
+    const extrasBtn = document.getElementById("citizenExtrasBtn");
+
+    refreshBtn.addEventListener("click", async () => {
+      setLoading(refreshBtn, refreshSpinner, true);
+      try {
+        await loadCitizenDashboard();
+      } finally {
+        setLoading(refreshBtn, refreshSpinner, false);
+      }
+    });
+
+    extrasBtn.addEventListener("click", async () => {
+      await loadCitizenExtras();
+    });
+
+    const redeemBtn = document.getElementById("redeemBtn");
+    const redeemSpinner = document.getElementById("redeemSpinner");
+    const redeemBtnText = document.getElementById("redeemBtnText");
+    const redeemAmount = document.getElementById("redeemAmount");
+    const redeemMeta = document.getElementById("redeemMeta");
+    const walletAlert = document.getElementById("citizenWalletAlert");
+
+    redeemBtn.addEventListener("click", async () => {
+      setAlert(walletAlert);
+      const amount = parseInt(redeemAmount.value, 10);
+      if (!amount || amount <= 0) {
+        setAlert(walletAlert, "warning", "Enter a positive credit amount to redeem.");
+        return;
+      }
+
+      setLoading(redeemBtn, redeemSpinner, true, redeemBtnText, "Redeeming…");
+      try {
+        const data = await apiFetch("/api/citizen/redeem-credits", {
+          method: "POST",
+          body: { amount, description: "Frontend redemption" },
+        });
+        setAlert(
+          walletAlert,
+          "success",
+          "Redeemed " +
+            amount +
+            " credits successfully. Rupee value: ₹" +
+            (data.rupeeValue || "0.00") +
+            ". Wallet will refresh on next dashboard load."
+        );
+        redeemMeta.textContent =
+          "Last redemption: " + amount + " credits (" + (data.rupeeValue || "0.00") + " rupees).";
+        await loadCitizenDashboard();
+      } catch (err) {
+        setAlert(
+          walletAlert,
+          "danger",
+          "Redemption failed (" + (err.status || "network") + "): " + (err.message || "Unable to redeem.")
+        );
+      } finally {
+        setLoading(redeemBtn, redeemSpinner, false, redeemBtnText, "Redeem");
+      }
+    });
+  })();
+
+  async function loadCollector() {
+    const todayPickupsEl = document.getElementById("collectorTodayPickups");
+    const routeMetaEl = document.getElementById("collectorRouteMeta");
+    const todayEarningsEl = document.getElementById("collectorTodayEarnings");
+    const bonusMetaEl = document.getElementById("collectorBonusMeta");
+    const monthMetaEl = document.getElementById("collectorMonthMeta");
+    const qualityScoreEl = document.getElementById("collectorQualityScore");
+    const routeCountsEl = document.getElementById("collectorRouteCounts");
+    const pendingList = document.getElementById("collectorPendingList");
+    const completedList = document.getElementById("collectorCompletedList");
+    const walletWrapper = document.getElementById("collectorWalletWrapper");
+
+    try {
+      const dash = await apiFetch("/api/collector/dashboard");
+      const route = await apiFetch("/api/collector/route");
+      const wallet = await apiFetch("/api/collector/wallet");
+
+      todayPickupsEl.textContent = dash.pickupsCompleted ?? dash.todayPickups ?? 0;
+      todayEarningsEl.textContent = "₹" + (dash.todayEarnings ?? "0.00");
+      routeMetaEl.textContent =
+        "Route: " +
+        (dash.route?.routeId || route.routeId || "—") +
+        " • Area: " +
+        (dash.route?.area || "—") +
+        " • Total households: " +
+        (dash.route?.totalHouseholds || dash.route?.household_count || 0);
+      qualityScoreEl.textContent = "Quality score: " + (dash.qualityScore ?? "—") + "%";
+      monthMetaEl.textContent = "This month: " + (wallet.month || "0.00") + " rupees";
+
+      const base = wallet.breakdown?.base ?? 0;
+      const bonus = wallet.breakdown?.bonuses ?? 0;
+      bonusMetaEl.textContent = "Base: ₹" + base + " • Bonus: ₹" + bonus;
+
+      pendingList.innerHTML = "";
+      (route.pending || []).forEach((h) => {
+        const li = document.createElement("li");
+        li.className = "list-item";
+        li.style.gridTemplateColumns = "minmax(0,2.5fr) minmax(0,1fr)";
+        li.innerHTML =
+          '<div class="list-item-main">' +
+          '<div class="list-item-title-row">' +
+          '<div class="list-item-title">' +
+          (h.householdId || "—") +
+          "</div>" +
+          '<span class="list-item-tag">' +
+          (h.address || "—") +
+          "</span>" +
+          "</div>" +
+          '<div class="list-item-sub">' +
+          (h.area || "—") +
+          " • status: pending" +
+          "</div>" +
+          "</div>" +
+          '<div class="list-item-meta">' +
+          '<span class="status-pill-warning">Pending</span>' +
+          "</div>";
+        pendingList.appendChild(li);
+      });
+
+      completedList.innerHTML = "";
+      (route.completed || []).forEach((p) => {
+        const li = document.createElement("li");
+        li.className = "list-item";
+        li.style.gridTemplateColumns = "minmax(0,2.5fr) minmax(0,1fr)";
+        li.innerHTML =
+          '<div class="list-item-main">' +
+          '<div class="list-item-title-row">' +
+          '<div class="list-item-title">' +
+          (p.householdId || "—") +
+          "</div>" +
+          '<span class="list-item-tag">' +
+          (p.address || "—") +
+          "</span>" +
+          "</div>" +
+          '<div class="list-item-sub">Area: ' +
+          (p.area || "—") +
+          " • Quality: " +
+          (p.qualityRating || "—") +
+          "</div>" +
+          "</div>" +
+          '<div class="list-item-meta">' +
+          '<span class="status-pill">₹' +
+          (p.earnings || "0.00") +
+          "</span>" +
+          "<span>" +
+          (p.time ? new Date(p.time).toLocaleTimeString() : "—") +
+          "</span>" +
+          "</div>";
+        completedList.appendChild(li);
+      });
+
+      routeCountsEl.textContent =
+        (route.pending?.length || 0) + " pending • " + (route.completed?.length || 0) + " done";
+
+      walletWrapper.innerHTML =
+        '<div class="wallet-grid">' +
+        '<div class="wallet-block">' +
+        '<div class="wallet-label">Today</div>' +
+        '<div class="wallet-value">₹' +
+        (wallet.today || "0.00") +
+        "</div>" +
+        '<div class="wallet-meta">Pickups this month: ' +
+        (wallet.pickupsThisMonth || 0) +
+        "</div>" +
+        "</div>" +
+        '<div class="wallet-block">' +
+        '<div class="wallet-label">Week vs month</div>' +
+        '<div class="wallet-meta">Week: ₹' +
+        (wallet.week || "0.00") +
+        " • Month: ₹" +
+        (wallet.month || "0.00") +
+        "</div>" +
+        '<div class="wallet-meta">Base: ₹' +
+        (wallet.breakdown?.base || "0.00") +
+        " • Bonuses: ₹" +
+        (wallet.breakdown?.bonuses || "0.00") +
+        "</div>" +
+        "</div>" +
+        "</div>";
+    } catch (err) {
+      walletWrapper.innerHTML =
+        '<div class="alert alert-danger" style="display:flex;">' +
+        '<span class="alert-icon">!</span>' +
+        '<div class="alert-text">Collector data fetch failed (' +
+        (err.status || "network") +
+        "): " +
+        (err.message || "Backend did not respond.") +
+        "</div></div>";
+    }
+  }
+
+  (function setupCollector() {
+    const refreshBtn = document.getElementById("collectorRefreshBtn");
+    const spinner = document.getElementById("collectorSpinner");
+    refreshBtn.addEventListener("click", async () => {
+      setLoading(refreshBtn, spinner, true);
+      try {
+        await loadCollector();
+      } finally {
+        setLoading(refreshBtn, spinner, false);
+      }
+    });
+
+    const pickupHouseholdId = document.getElementById("pickupHouseholdId");
+    const wet = document.getElementById("pickupWet");
+    const dry = document.getElementById("pickupDry");
+    const recyclables = document.getElementById("pickupRecyclables");
+    const ewaste = document.getElementById("pickupEwaste");
+    const quality = document.getElementById("pickupQuality");
+    const contamination = document.getElementById("pickupContamination");
+    const submitBtn = document.getElementById("pickupSubmitBtn");
+    const submitSpinner = document.getElementById("pickupSpinner");
+    const submitText = document.getElementById("pickupSubmitText");
+    const pickupAlert = document.getElementById("pickupAlert");
+
+    submitBtn.addEventListener("click", async () => {
+      setAlert(pickupAlert);
+      const householdId = pickupHouseholdId.value.trim();
+      if (!householdId) {
+        setAlert(pickupAlert, "warning", "Household ID is required.");
+        return;
+      }
+
+      const payload = {
+        householdId,
+        wetWasteKg: wet.value || "0",
+        dryWasteKg: dry.value || "0",
+        recyclablesKg: recyclables.value || "0",
+        ewasteKg: ewaste.value || "0",
+        qualityRating: quality.value,
+        contaminationDetected: contamination.value === "true",
+      };
+
+      setLoading(submitBtn, submitSpinner, true, submitText, "Recording…");
+
+      try {
+        const data = await apiFetch("/api/collector/complete-pickup", {
+          method: "POST",
+          body: payload,
+        });
+        setAlert(
+          pickupAlert,
+          "success",
+          "Pickup recorded. Citizen earned " +
+            (data.citizenCredits ?? data.creditsEarned ?? "—") +
+            " credits (₹" +
+            (data.citizenRupees ?? "0.00") +
+            "), collector payout: ₹" +
+            (data.totalCollectorPayout ?? "0.00") +
+            "."
+        );
+        await loadCollector();
+      } catch (err) {
+        setAlert(
+          pickupAlert,
+          "danger",
+          "Pickup recording failed (" + (err.status || "network") + "): " + (err.message || "Backend error.")
+        );
+      } finally {
+        setLoading(submitBtn, submitSpinner, false, submitText, "Record pickup");
+      }
+    });
+  })();
+
+  async function loadAdmin() {
+    const segregationEl = document.getElementById("adminSegregationRate");
+    const contaminationEl = document.getElementById("adminContaminationRate");
+    const diversionEl = document.getElementById("adminDiversion");
+    const activeHouseholdsEl = document.getElementById("adminActiveHouseholds");
+    const activeCollectorsEl = document.getElementById("adminActiveCollectors");
+    const recyclablesEl = document.getElementById("adminRecyclables");
+    const analyticsWrapper = document.getElementById("adminAnalyticsWrapper");
+    const hotspotsList = document.getElementById("adminHotspotsList");
+    const routesTbody = document.getElementById("adminRoutesTbody");
+    const routesCountEl = document.getElementById("adminRoutesCount");
+
+    try {
+      const kpis = await apiFetch("/api/admin/dashboard");
+      segregationEl.textContent = (kpis.segregationRate ?? "0") + "%";
+      contaminationEl.textContent = (kpis.contaminationRate ?? "0") + "%";
+      diversionEl.textContent = "Landfill diversion: " + (kpis.landfillDiversion ?? "0") + "%";
+      activeHouseholdsEl.textContent = kpis.activeHouseholds ?? 0;
+      activeCollectorsEl.textContent = kpis.activeCollectors ?? 0;
+      recyclablesEl.textContent = kpis.recyclablesCollected ?? 0;
+
+      const analytics = await apiFetch("/api/admin/analytics");
+      if (!analytics || !analytics.trends || analytics.trends.length === 0) {
+        analyticsWrapper.innerHTML = "<div class='empty-state'>No analytics data for the selected window.</div>";
+      } else {
+        const totalPickups = analytics.summary?.totalPickups ?? 0;
+        const avgSeg = analytics.summary?.averageSegregation ?? "0";
+        const totalWaste = analytics.summary?.totalWaste ?? "0";
+        analyticsWrapper.innerHTML =
+          "<div class='alert alert-info' style='display:flex;'>" +
+          "<span class='alert-icon'>ℹ</span>" +
+          "<div class='alert-text'>" +
+          "Over this window: <strong>" +
+          totalPickups +
+          "</strong> pickups, avg segregation <strong>" +
+          avgSeg +
+          "%</strong>, total waste handled <strong>" +
+          totalWaste +
+          " kg</strong>." +
+          "</div></div>";
+      }
+
+      const hotspots = await apiFetch("/api/admin/contamination-hotspots");
+      hotspotsList.innerHTML = "";
+      if (Array.isArray(hotspots) && hotspots.length) {
+        hotspots.forEach((h) => {
+          const li = document.createElement("li");
+          li.className = "list-item";
+          li.style.gridTemplateColumns = "minmax(0,2.2fr) minmax(0,1.2fr)";
+          li.innerHTML =
+            '<div class="list-item-main">' +
+            '<div class="list-item-title-row">' +
+            '<div class="list-item-title">' +
+            (h.area || "—") +
+            "</div>" +
+            '<span class="list-item-tag">Ward ' +
+            (h.ward || "—") +
+            "</span>" +
+            "</div>" +
+            '<div class="list-item-sub">Pickups: ' +
+            (h.totalPickups ?? h.total_pickups ?? 0) +
+            " • Contaminated: " +
+            (h.contaminatedPickups ?? h.contaminated ?? 0) +
+            "</div>" +
+            "</div>" +
+            '<div class="list-item-meta">' +
+            '<span class="' +
+            (h.severity === "high" ? "status-pill-danger" : "status-pill-warning") +
+            '">Contamination: ' +
+            (h.contaminationRate ?? "0") +
+            "%</span>" +
+            "</div>";
+          hotspotsList.appendChild(li);
+        });
+      } else {
+        hotspotsList.innerHTML = "<div class='empty-state'>No hotspots exceed the configured threshold.</div>";
+      }
+
+      const routes = await apiFetch("/api/admin/routes");
+      routesTbody.innerHTML = "";
+      routesCountEl.textContent = (routes.length || 0) + " routes";
+      routes.forEach((r) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML =
+          "<td>" +
+          (r.routeId || r.route_id || "—") +
+          "</td><td>" +
+          (r.area || "—") +
+          "</td><td>" +
+          (r.households ?? r.household_count ?? 0) +
+          "</td><td>" +
+          (r.distance ?? r.distance_km ?? 0) +
+          " km</td>";
+        routesTbody.appendChild(tr);
+      });
+    } catch (err) {
+      analyticsWrapper.innerHTML =
+        '<div class="alert alert-danger" style="display:flex;">' +
+        '<span class="alert-icon">!</span>' +
+        '<div class="alert-text">Admin data fetch failed (' +
+        (err.status || "network") +
+        "): " +
+        (err.message || "Backend error.") +
+        "</div></div>";
+    }
+  }
+
+  (function setupAdmin() {
+    const refreshBtn = document.getElementById("adminRefreshBtn");
+    const spinner = document.getElementById("adminSpinner");
+    const wardInput = document.getElementById("adminWardInput");
+    const wardBtn = document.getElementById("adminWardBtn");
+    const analyticsWrapper = document.getElementById("adminAnalyticsWrapper");
+
+    refreshBtn.addEventListener("click", async () => {
+      setLoading(refreshBtn, spinner, true);
+      try {
+        await loadAdmin();
+      } finally {
+        setLoading(refreshBtn, spinner, false);
+      }
+    });
+
+    wardBtn.addEventListener("click", async () => {
+      const ward = wardInput.value.trim();
+      try {
+        const params = new URLSearchParams();
+        if (ward) params.set("ward", ward);
+        const analytics = await apiFetch("/api/admin/analytics?" + params.toString());
+        if (!analytics || !analytics.trends || analytics.trends.length === 0) {
+          analyticsWrapper.innerHTML =
+            "<div class='empty-state'>No analytics data for ward " + (ward || "—") + ".</div>";
+        } else {
+          const totalPickups = analytics.summary?.totalPickups ?? 0;
+          const avgSeg = analytics.summary?.averageSegregation ?? "0";
+          const totalWaste = analytics.summary?.totalWaste ?? "0";
+          analyticsWrapper.innerHTML =
+            "<div class='alert alert-info' style='display:flex;'>" +
+            "<span class='alert-icon'>ℹ</span>" +
+            "<div class='alert-text'>" +
+            "Ward <strong>" +
+            (ward || "all") +
+            "</strong>: <strong>" +
+            totalPickups +
+            "</strong> pickups, avg segregation <strong>" +
+            avgSeg +
+            "%</strong>, total waste handled <strong>" +
+            totalWaste +
+            " kg</strong>." +
+            "</div></div>";
+        }
+      } catch (err) {
+        analyticsWrapper.innerHTML =
+          '<div class="alert alert-danger" style="display:flex;">' +
+          '<span class="alert-icon">!</span>' +
+          '<div class="alert-text">Ward analytics failed (' +
+          (err.status || "network") +
+          "): " +
+          (err.message || "Backend error.") +
+          "</div></div>";
+      }
+    });
+
+    const name = document.getElementById("adminHouseName");
+    const phone = document.getElementById("adminHousePhone");
+    const address = document.getElementById("adminHouseAddress");
+    const area = document.getElementById("adminHouseArea");
+    const ward = document.getElementById("adminHouseWard");
+    const latLng = document.getElementById("adminHouseLatLng");
+    const createBtn = document.getElementById("adminCreateHouseBtn");
+    const createSpinner = document.getElementById("adminCreateHouseSpinner");
+    const createText = document.getElementById("adminCreateHouseText");
+    const houseAlert = document.getElementById("adminHouseAlert");
+
+    createBtn.addEventListener("click", async () => {
+      setAlert(houseAlert);
+      if (!name.value.trim() || !phone.value.trim() || !address.value.trim() || !area.value.trim()) {
+        setAlert(houseAlert, "warning", "Name, phone, address and area are required.");
+        return;
+      }
+      let lat = null, lng = null;
+      if (latLng.value.trim()) {
+        const parts = latLng.value.split(",");
+        if (parts.length === 2) {
+          lat = parseFloat(parts[0]);
+          lng = parseFloat(parts[1]);
+        }
+      }
+
+      const body = {
+        name: name.value.trim(),
+        phone: phone.value.trim(),
+        address: address.value.trim(),
+        area: area.value.trim(),
+        ward: ward.value.trim() || "Ward 1",
+        latitude: lat,
+        longitude: lng,
+      };
+
+      setLoading(createBtn, createSpinner, true, createText, "Creating…");
+      try {
+        const data = await apiFetch("/api/admin/household/create", { method: "POST", body });
+        setAlert(
+          houseAlert,
+          "success",
+          "Household created with ID " +
+            (data.householdId || "—") +
+            " for user " +
+            (data.userId || "—") +
+            ". It will now appear in citizen & collector views."
+        );
+        await loadAdmin();
+      } catch (err) {
+        setAlert(
+          houseAlert,
+          "danger",
+          "Household creation failed (" + (err.status || "network") + "): " + (err.message || "Backend error.")
+        );
+      } finally {
+        setLoading(createBtn, createSpinner, false, createText, "Create household");
+      }
+    });
+  })();
+
+  window.addEventListener("load", () => {
+    syncSessionUI();
+  });
+//async function testBackend() {
+  //const res = await fetch("/");
+  //const data = await res.text();
+  //console.log(data);
+  //alert(data);
+//}
+//testBackend();
+</script>
+</body>
+</html>
